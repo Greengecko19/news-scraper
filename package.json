@@ -1,0 +1,41 @@
+{
+  "name": "news_scraper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Greengecko19/news_scraper.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Greengecko19/news_scraper/issues"
+  },
+  "homepage": "https://github.com/Greengecko19/news_scraper#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "body-parser": "^1.18.3",
+    "bytes": "^3.0.0",
+    "cheerio": "^1.0.0-rc.2",
+    "content-type": "^1.0.4",
+    "depd": "^1.1.2",
+    "destroy": "^1.0.4",
+    "ee-first": "^1.1.1",
+    "encodeurl": "^1.0.2",
+    "escape-html": "^1.0.3",
+    "etag": "^1.8.1",
+    "express": "^4.16.3",
+    "express-handlebars": "^3.0.0",
+    "forwarded": "^0.1.2",
+    "fresh": "^0.5.2",
+    "iconv-lite": "^0.4.19",
+    "inherits": "^2.0.3",
+    "mongoose": "^5.1.6",
+    "request": "^2.87.0"
+  },
+  "devDependencies": {}
+}
