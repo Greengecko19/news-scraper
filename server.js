@@ -4,20 +4,12 @@ var mongoose = require("mongoose");
 var exphbs = require('express-handlebars');
 var request = require("request");
 var cheerio = require("cheerio");
-
 var app = express();
-
-var collections = ["scrapedData"];
-
-
-// Our scraping tools
-// Axios is a promised-based http library, similar to jQuery's Ajax method
-// It works on the client and on the server
 var axios = require("axios");
 var cheerio = require("cheerio");
 
 // Require all models
-var db = require("./models/Index");
+var db = require("./models");
 
 var PORT = process.env.PORT || 3000;
 
@@ -48,59 +40,80 @@ app.get('/', function (req, res) {
     if (err) {
       console.log(err)
     } else {
-    res.render('home', {listings: data});
+    res.render('home'); //, {listing: data});
     }
   })
 });
 
 app.get("/scrape", function(req, res) {
-  return axios.get('https://washingtondc.craigslist.org/d/electronics/search/ela')
-    .then(function (response) {
-      var $ = cheerio.load(response.data);
-
-      $("hrdlnk").each(function(i, element) {
-      var result = {};
-      result.title = $(this)
-        .children("a")
-        .text();
-      result.link = $(this)
-        .children("a")
-        .attr("href");
-
-        db.items.create(result)
-        .then(function(dbArticle) {
-          // View the added result in the console
-          console.log(dbArticle);
+ axios.get('https://washingtondc.craigslist.org/d/electronics/search/ela')
+  .then(function (response) {
+    var $ = cheerio.load(response.data);
+    var $hdrlnk = $(".hdrlnk");
+    var itemForSale = {};
+    // var itemForSale = [];
+    if($hdrlnk.length) {
+      $hdrlnk.each(function(i, element) {
+        var title = $(element).text();
+        var link = $(element).attr('href');
+        itemForSale = {"title": title , "link": link};
+        db.Item.create(itemForSale)
+          .then(function(listing) {
+            console.log("listing: " + listing);
+            // res.send("Scrape Complete");
+            // res.render("home", {
+            //   "listing": listing
+            // })
+          })
+          .catch(function(err) {
+            res.json(err);
+          })
         })
-        .catch(function(err) {
-          // If an error occurred, send it to the client
-          return res.json(err);
-      });
+      }
     })
-    .catch(function (error) {
-      console.log(error);
-    });
+  .catch(function (error) {
+    console.log(error);
+  })
+});
 
-})
+
+app.get("/listings", function(req, res) {
+  db.Item.find({})
+    .then(function(listing) {
+      res.json(listing);
+    })
+    .catch(function(err) {
+      res.json(err);
+    });
+});
+
+
+
+    // })
+    // .catch(function (error) {
+    //   console.log('THERE WAS AN ERROR')
+    //   console.log(error);
+    // });
+// });
 
 
 /* $("hrdlnk").each(function(i, element) {;
-  // Save an empty result object;
-  var result = {};
+  // Save an empty itemForSale object;
+  var itemForSale = {};
 
-  // Add the text and href of every link, and save them as properties of the result object;
-  result.title = $(this);
+  // Add the text and href of every link, and save them as properties of the itemForSale object;
+  itemForSale.title = $(this);
     .children("a");
     .text();
-  result.link = $(this);
+  itemForSale.link = $(this);
     .children("a");
     .attr("href");
 
-  // Create a new Article using the `result` object built from scraping;
-  db.Article.create(result);
-    .then(function(dbArticle) {;
-      // View the added result in the console;
-      console.log(dbArticle);
+  // Create a new Article using the `itemForSale` object built from scraping;
+  db.Article.create(itemForSale);
+    .then(function(listing) {;
+      // View the added itemForSale in the console;
+      console.log(listing);
     });
     .catch(function(err) {;
       // If an error occurred, send it to the client;
@@ -109,8 +122,6 @@ app.get("/scrape", function(req, res) {
 });
  */
   // Send a "Scrape Complete" message to the browser
-  res.send("Scrape Complete");
-});
 
 
 
