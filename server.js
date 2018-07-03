@@ -40,7 +40,7 @@ app.get('/', function (req, res) {
     if (err) {
       console.log(err)
     } else {
-    res.render('home'); //, {listing: data});
+    res.render('home', {listing: data});
     }
   })
 });
@@ -79,8 +79,8 @@ app.get("/scrape", function(req, res) {
 
 app.get("/listings", function(req, res) {
   db.Item.find({})
-    .then(function(listing) {
-      res.json(listing);
+    .then(function(listings) {
+      res.json(listings);
     })
     .catch(function(err) {
       res.json(err);
